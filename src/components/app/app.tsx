@@ -30,9 +30,9 @@ const App = () => {
   const isAuthChecked = useSelector(isAuthCheckedSelector);
 
   useEffect(() => {
+    dispatch(getIngredientsList()); // Загружаем ингредиенты всегда
     if (isAuthChecked) {
-      dispatch(getIngredientsList());
-      dispatch(userGet());
+      dispatch(userGet()); // Получаем данные пользователя только если авторизован
     }
   }, [dispatch, isAuthChecked]);
 
