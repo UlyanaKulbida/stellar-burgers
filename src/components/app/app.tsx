@@ -15,7 +15,7 @@ import styles from './app.module.css';
 import { AppHeader, OrderInfo, IngredientDetails, Modal } from '@components';
 import { useLocation, useNavigate, Route, Routes } from 'react-router-dom';
 import { useDispatch, useSelector } from '../../services/store';
-import { Suspense, useEffect } from 'react';
+import { Suspense, useEffect, useState } from 'react';
 import { getIngredientsList } from '../../services/slices/ingredientSlice';
 import {
   isAuthCheckedSelector,
