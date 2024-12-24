@@ -29,12 +29,18 @@ const App = () => {
   const dispatch = useDispatch();
   const isAuthChecked = useSelector(isAuthCheckedSelector);
 
+  // useEffect(() => {
+  //   dispatch(getIngredientsList()); // Загружаем ингредиенты всегда
+  //   if (isAuthChecked) {
+  //     dispatch(userGet()); // Получаем данные пользователя только если авторизован
+  //   }
+  // }, [dispatch, isAuthChecked]);
+  //Не получилось реализовать в Cypress в isAuthChecked возвращать true
+
   useEffect(() => {
-    dispatch(getIngredientsList()); // Загружаем ингредиенты всегда
-    if (isAuthChecked) {
-      dispatch(userGet()); // Получаем данные пользователя только если авторизован
-    }
-  }, [dispatch, isAuthChecked]);
+    dispatch(getIngredientsList());
+    dispatch(userGet()); // Всегда извлекать пользовательские данные
+  }, [dispatch]);
 
   return (
     <div className={styles.app}>
@@ -135,6 +141,7 @@ const App = () => {
               path='/ingredients/:id'
               element={
                 <Modal
+                  // title={'Детали ингредиента'}
                   title={'Детали ингредиента'}
                   onClose={() => navigate(-1)}
                 >
