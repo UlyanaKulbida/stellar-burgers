@@ -1,38 +1,59 @@
-import { addOrderReducer } from '../addOrderSlice';
+import { addOrder, addOrderReducer, resetOrder } from '../addOrderSlice';
+import { initialState as rootInitialState } from './rootReducer.test';
+import { ERROR_MESSAGE } from '../../../utils/constants.utils';
 
 describe('addOrderSlice', () => {
-  const initialState = {
-    orderRequest: false,
-    orderModalData: null,
-    error: null
+  const initialState = rootInitialState.addOrder;
+  const PENDING_TYPE = addOrder.pending.type;
+  const FULFILLED_TYPE = addOrder.fulfilled.type;
+  const REJECTED_TYPE = addOrder.rejected.type;
+  const RESET_ORDER_TYPE = resetOrder.type;
+  const ORDER = {
+    _id: '123',
+    number: 123,
+    status: 'done',
+    name: 'Номер заказа',
+    createdAt: '2022-01-01T00:00:00.000Z',
+    updatedAt: '2022-01-01T00:00:00.000Z',
+    ingredients: []
   };
 
-  it('обработка заказа на добавление: pending', () => {
-    const action = { type: 'addOrder/createOrder/pending' };
+  const MODIFIED_STATE = { ...initialState, orderModalData: ORDER };
+
+  it('возвращение в исходное состояние', () => {
+    expect(addOrderReducer(undefined, { type: '' })).toEqual(initialState);
+  });
+
+  it('обработка addOrder: pending', () => {
+    const action = { type: PENDING_TYPE };
     const nextState = addOrderReducer(initialState, action);
     expect(nextState.orderRequest).toBe(true);
     expect(nextState.error).toBeNull();
   });
 
-  it('обработка заказа на добавление: rejected', () => {
+  it('обработка addOrder: rejected', () => {
     const action = {
-      type: 'addOrder/createOrder/rejected',
-      payload: 'Error message',
-      error: { message: 'Error message' }
+      type: REJECTED_TYPE,
+      error: { message: ERROR_MESSAGE }
     };
     const nextState = addOrderReducer(initialState, action);
     expect(nextState.orderRequest).toBe(false);
-    expect(nextState.error).toBe('Error message');
+    expect(nextState.error).toBe(ERROR_MESSAGE);
   });
 
-  const action = {
-    type: 'addOrder/createOrder/fulfilled',
-    payload: { order: 'testOrder' }
-  };
-  const nextState = addOrderReducer(initialState, action);
-  expect(nextState).toEqual({
-    ...initialState,
-    orderRequest: false,
-    orderModalData: { order: 'testOrder' }
+  it('обработка addOrder: fulfilled', () => {
+    const action = {
+      type: FULFILLED_TYPE,
+      payload: ORDER
+    };
+    const nextState = addOrderReducer(initialState, action);
+    expect(nextState.orderRequest).toBe(false);
+    expect(nextState.orderModalData).toEqual(ORDER);
+  });
+
+  it('обработка resetOrder', () => {
+    const action = { type: RESET_ORDER_TYPE };
+    const nextState = addOrderReducer(MODIFIED_STATE, action);
+    expect(nextState).toEqual(initialState);
   });
 });
