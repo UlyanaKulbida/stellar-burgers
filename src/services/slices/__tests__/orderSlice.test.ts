@@ -1,16 +1,13 @@
-import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { TOrder } from '@utils-types';
 import { ordersReducer } from '../orderSlice';
+import { initialState as rootInitialState } from './rootReducer.test';
+import { getActionTypes, ERROR_MESSAGE } from '../../../utils/constants.utils';
 
 describe('ordersSlice', () => {
-  const initialState = {
-    orders: [],
-    loading: false,
-    error: null
-  };
+  const initialState = rootInitialState.orders;
+  const { PENDING, FULFILLED, REJECTED } = getActionTypes('orders/getOrders');
 
   it('обработка getOrdersList: pending', () => {
-    const action = { type: 'orders/getOrders/pending' };
+    const action = { type: PENDING };
     const nextState = ordersReducer(initialState, action);
     expect(nextState.loading).toBe(true);
     expect(nextState.orders).toEqual([]);
@@ -18,8 +15,8 @@ describe('ordersSlice', () => {
   });
 
   it('обработка getOrdersList: fulfilled', () => {
-    const orders = [{ _id: '1', number: 123 } as TOrder];
-    const action = { type: 'orders/getOrders/fulfilled', payload: orders };
+    const orders = [{ _id: '1', number: 123 }];
+    const action = { type: FULFILLED, payload: orders };
     const nextState = ordersReducer(initialState, action);
     expect(nextState.loading).toBe(false);
     expect(nextState.orders).toEqual(orders);
@@ -27,12 +24,12 @@ describe('ordersSlice', () => {
 
   it('обработка getOrdersList: rejected', () => {
     const action = {
-      type: 'orders/getOrders/rejected',
-      payload: 'Error message',
-      error: { message: 'Error message' }
+      type: REJECTED,
+      payload: ERROR_MESSAGE,
+      error: { message: ERROR_MESSAGE }
     };
     const nextState = ordersReducer(initialState, action);
     expect(nextState.loading).toBe(false);
-    expect(nextState.error).toBe('Error message');
+    expect(nextState.error).toBe(ERROR_MESSAGE);
   });
 });
