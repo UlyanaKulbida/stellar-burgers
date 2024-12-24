@@ -1,27 +1,22 @@
-import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { TOrder } from '@utils-types';
 import { feedsReducer } from '../feedSlice';
+import { initialState as rootInitialState } from './rootReducer.test';
+import { getActionTypes, ERROR_MESSAGE } from '../../../utils/constants.utils';
 
 describe('feedsSlice', () => {
-  const initialState = {
-    orders: [],
-    total: 0,
-    totalToday: 0,
-    loading: true,
-    error: null
-  };
+  const initialState = rootInitialState.feeds;
+  const { PENDING, FULFILLED, REJECTED } = getActionTypes('feeds/all');
 
   it('обработка getFeedsList: pending', () => {
-    const action = { type: 'feeds/all/pending' };
+    const action = { type: PENDING };
     const nextState = feedsReducer(initialState, action);
     expect(nextState.loading).toBe(true);
     expect(nextState.error).toBeNull();
   });
 
   it('обработка getFeedsList: fulfilled', () => {
-    const orders = [{ _id: '1', number: 123 } as TOrder];
+    const orders = [{ _id: '1', number: 123 }];
     const action = {
-      type: 'feeds/all/fulfilled',
+      type: FULFILLED,
       payload: { orders, total: 100, totalToday: 10 }
     };
     const nextState = feedsReducer(initialState, action);
@@ -33,12 +28,12 @@ describe('feedsSlice', () => {
 
   it('обработка getFeedsList: rejected', () => {
     const action = {
-      type: 'feeds/all/rejected',
-      payload: 'Error message',
-      error: { message: 'Error message' }
+      type: REJECTED,
+      payload: ERROR_MESSAGE,
+      error: { message: ERROR_MESSAGE }
     };
     const nextState = feedsReducer(initialState, action);
     expect(nextState.loading).toBe(false);
-    expect(nextState.error).toBe('Error message');
+    expect(nextState.error).toBe(ERROR_MESSAGE);
   });
 });
