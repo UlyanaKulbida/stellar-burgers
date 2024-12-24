@@ -15,41 +15,45 @@ const rootReducer = combineReducers({
   addOrder: addOrderReducer
 });
 
+// Определяет начальное состояние как постоянное
+export const initialState = rootReducer(undefined, { type: '@@INIT' });
+
 describe('rootReducer', () => {
-  it('should combine all reducers', () => {
-    const initialState = rootReducer(undefined, { type: '@@INIT' });
-    expect(initialState).toEqual({
-      burgerConstructor: {
-        bun: null,
-        ingredients: []
-      },
-      burgerIngredients: {
-        ingredients: [],
-        loading: false,
-        error: null
-      },
-      user: {
-        isAuthChecked: false,
-        user: { email: '', name: '' },
-        error: null
-      },
-      feeds: {
-        orders: [],
-        total: 0,
-        totalToday: 0,
-        loading: true,
-        error: null
-      },
-      orders: {
-        orders: [],
-        loading: false,
-        error: null
-      },
-      addOrder: {
-        orderRequest: false,
-        orderModalData: null,
-        error: null
-      }
-    });
+  const EXPECTED_INITIAL_STATE = {
+    burgerConstructor: {
+      bun: null,
+      ingredients: []
+    },
+    burgerIngredients: {
+      ingredients: [],
+      loading: false,
+      error: null
+    },
+    user: {
+      isAuthChecked: false,
+      user: { email: '', name: '' },
+      error: null
+    },
+    feeds: {
+      orders: [],
+      total: 0,
+      totalToday: 0,
+      loading: true,
+      error: null
+    },
+    orders: {
+      orders: [],
+      loading: false,
+      error: null
+    },
+    addOrder: {
+      orderRequest: false,
+      orderModalData: null,
+      error: null
+    }
+  };
+
+  it('объединение всех reducers', () => {
+    expect(initialState).toEqual(EXPECTED_INITIAL_STATE);
   });
 });
